@@ -10,7 +10,7 @@ EStopPublisher = rospy.Publisher("eStop", Bool, queue_size=10)
 
 msg = drive_params()
 while(1):
-    EStopPublisher.publish(False)
+    #EStopPublisher.publish(False)
 
     for a in range 100:
         time.sleep(0.01)
@@ -24,17 +24,4 @@ while(1):
         msg.angle = turn
         msg.velocity = 0
         DriveParamPublisher.publish(msg)
-
-    for c in range 100:
-        time.sleep(0.01)
-        turn =  - (a / 100)
-        msg.angle = turn
-        msg.velocity = 0
-        DriveParamPublisher.publish(msg)
-
-    for c in range 100:
-        time.sleep(0.01)
-        turn =  -1 + (a / 100)
-        msg.angle = turn
-        msg.velocity = 0
-        DriveParamPublisher.publish(msg)
+    continue
