@@ -5,13 +5,7 @@ from std_msgs.msg import Bool
 import time
 from sensor_msgs.msg import LaserScan
 
-rospy.init_node("BugControl")
-DriveParamPublisher = rospy.Publisher("drive_parameters", drive_params, queue_size=10)
-EStopPublisher = rospy.Publisher("eStop", Bool, queue_size=10)
-rospy.Subscriber('scan', LaserScan, self.lidar_callback)
-rospy.spin()
-
-def lidar_callback(self, distances):
+def lidar_callback(distances):
     num_scans = len(distances)
     max_distance = 0.0
     for sample in distances:
@@ -20,8 +14,16 @@ def lidar_callback(self, distances):
     print("Max distance:")
     print(max_distance)
 
+
+
+rospy.init_node("BugControl")
+DriveParamPublisher = rospy.Publisher("drive_parameters", drive_params, queue_size=10)
+EStopPublisher = rospy.Publisher("eStop", Bool, queue_size=10)
+rospy.Subscriber('scan', LaserScan, lidar_callback)
+rospy.spin()
+
 msg = drive_params()
-while(1):
+while(False):
 
     #EStopPublisher.publish(False)
     for a in range(99):
