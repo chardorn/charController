@@ -5,7 +5,8 @@ from std_msgs.msg import Bool
 import time
 from sensor_msgs.msg import LaserScan
 
-def lidar_callback(distances):
+def lidar_callback(scans):
+    distances = scans.ranges
     num_scans = len(distances)
     max_distance = 0.0
     for sample in distances:
