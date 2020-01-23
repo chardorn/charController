@@ -2,41 +2,39 @@
 import rospy
 from ac_msgs.msg import drive_params
 from std_msgs.msg import Bool
-import curses
+import time
 
-currwindow = curses.initscr()
-currwindow.keypad(1)
-curses.cbreak()
-curses.halfdelay(1)
-curses.noecho()
-rospy.init_node("KeyboardControl")
+rospy.init_node("BugControl")
 DriveParamPublisher = rospy.Publisher("drive_parameters", drive_params, queue_size=10)
 EStopPublisher = rospy.Publisher("eStop", Bool, queue_size=10)
-turn = 0
+
+msg = drive_params()
 while(1):
-    currwindow.refresh()
-    currchar = currwindow.getch()
-    msg = drive_params()
-    if (currchar == curses.KEY_UP):
-        msg.velocity = 12
-    elif (currchar == curses.KEY_DOWN):
-        msg.velocity = -12
-    if (currchar == curses.KEY_LEFT):
-        turn -= 2
-    elif (currchar == curses.KEY_RIGHT):
-        turn += 2
-    if (currchar == -1):
+    EStopPublisher.publish(False)
+
+    for a in range 100:
+        time.sleep(0.01)
+        turn =  (a / 100)
+        msg.angle = turn
         msg.velocity = 0
-    if (currchar == 99):
-        turn = 0
-    if (currchar == 32):
+        DriveParamPublisher.publish(msg)
+    for b in range 100:
+        time.sleep(0.01)
+        turn =  1 - (b / 100)
+        msg.angle = turn
         msg.velocity = 0
-        turn = 0
-        EStopPublisher.publish(False)
-        break
-    msg.angle = turn
-    DriveParamPublisher.publish(msg)
-curses.nocbreak()
-curses.echo()
-currwindow.keypad(0)
-curses.endwin()
+        DriveParamPublisher.publish(msg)
+
+    for c in range 100:
+        time.sleep(0.01)
+        turn =  - (a / 100)
+        msg.angle = turn
+        msg.velocity = 0
+        DriveParamPublisher.publish(msg)
+
+    for c in range 100:
+        time.sleep(0.01)
+        turn =  -1 + (a / 100)
+        msg.angle = turn
+        msg.velocity = 0
+        DriveParamPublisher.publish(msg)
