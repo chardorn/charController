@@ -6,7 +6,7 @@ import time
 from sensor_msgs.msg import LaserScan
 
 msg = drive_params()
-
+msg.angle = 0.5
 def lidar_callback(scans):
     distances = scans.ranges
     num_scans = len(distances)
@@ -41,21 +41,3 @@ DriveParamPublisher = rospy.Publisher("drive_parameters", drive_params, queue_si
 EStopPublisher = rospy.Publisher("eStop", Bool, queue_size=10)
 rospy.Subscriber('scan', LaserScan, lidar_callback)
 rospy.spin()
-
-while(False):
-
-    #EStopPublisher.publish(False)
-    for a in range(99):
-        time.sleep(0.01)
-        turn =  (a / 100.0)
-        msg.angle = turn
-
-        DriveParamPublisher.publish(msg)
-    a = 0
-    for b in range(99):
-        time.sleep(0.01)
-        turn =  1 - (b / 100.0)
-        msg.angle = turn
-        msg.velocity = 0
-    b = 0
-    continue
