@@ -14,7 +14,9 @@ def lidar_callback(scans):
             max_distance = sample
     print("Max distance:")
     print(max_distance)
-
+    print("Center distance:")
+    print(distances[num_scans / 2])
+    
 
 
 rospy.init_node("BugControl")
