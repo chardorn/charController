@@ -9,11 +9,13 @@ from sensor_msgs.msg import Joy
 msg = drive_params()
 msg.angle = 0.5
 global_scans = LaserScan()
+max_index = 540
+
 
 def joy_callback(data):
     if data.buttons[1] == 1:
-        while data.buttons[1] == 1:
-            autonomous()
+        t1.start()
+        t2.start()
     else:
         manual(data)
 
@@ -71,7 +73,6 @@ def autonomous():
         msg.velocity = 0.05
     DriveParamPublisher.publish(msg)
 
-
 def lidar_callback(scans):
     global global_scans
     global_scans= scans
@@ -104,6 +105,8 @@ def backUp():
     msg.velocity = 0
     DriveParamPublisher.publish(msg)
 
+t1 = threading.Thread(target=autonomous, args=(10,))
+t2 = threading.Thread(target= , args=(10,))
 
 DriveParamPublisher = rospy.Publisher("drive_parameters", drive_params, queue_size=10)
 EStopPublisher = rospy.Publisher("eStop", Bool, queue_size=10)
@@ -111,3 +114,10 @@ rospy.Subscriber('scan', LaserScan, lidar_callback)
 rospy.Subscriber('joy', Joy, joy_callback)
 rospy.init_node("JoyControl")
 rospy.spin()
+
+
+
+
+
+t1.join()
+t2.join()
