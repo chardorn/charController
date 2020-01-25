@@ -11,8 +11,7 @@ msg = drive_params()
 msg.angle = 0.5
 global_scans = LaserScan()
 max_index = 540
-mode = 0 # 0 for manual, 1 for autonomous
-
+mode = 0
 
 def joy_callback(data):
     print("Call back!")
