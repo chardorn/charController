@@ -11,22 +11,22 @@ msg = drive_params()
 msg.angle = 0.5
 global_scans = LaserScan()
 max_index = 540
-autonomous = 0
+mode = 0 # 0 for manual, 1 for autonomous
 
 
 def joy_callback(data):
     print("Call back!")
-    global autonomous
+    global mode
+
     if data.buttons[1] == 1:
-        autonomous = 1
+        mode = 1
         if not t1.isAlive():
-            t1.start()
-        #t2.start()
-    #if data.buttons[1] == 0:
-     #   t1.join()
+            t1.start() #start autonomous()
     else:
+        if t1.isAlive():
+            stop_threads = True
+            t1.join()
         autonomous = 0
-        
         manual(data)
 
 def manual(data):
@@ -46,13 +46,12 @@ def manual(data):
         msg.velocity = 0
     msg.angle = 0.5 - (data.axes[2] / 2.0)
     print(msg.angle)
-    #msg.velocity = 0.05
     DriveParamPublisher.publish(msg)
 
-def autonomous(data):
+def autonomous(stop):
     print("Called Autonomous")
-    global autonomous
-    while(autonomous == 1):
+    global mode
+    while(mode == 1):
         print("Autonomous!")
         global global_scans
         print(global_scans)
@@ -85,6 +84,8 @@ def autonomous(data):
         else:
             msg.velocity = 0.05
         DriveParamPublisher.publish(msg)
+        if stop():
+                break
 
     if t1.isAlive():
         t1.join()
@@ -122,8 +123,7 @@ def backUp():
     DriveParamPublisher.publish(msg)
 
 print("Setting up... ")
-t1 = threading.Thread(target=autonomous, args=(10,))
-#t2 = threading.Thread(target= , args=(10,))
+t1 = threading.Thread(target=autonomous, args =(lambda : stop_threads, )
 
 DriveParamPublisher = rospy.Publisher("drive_parameters", drive_params, queue_size=10)
 EStopPublisher = rospy.Publisher("eStop", Bool, queue_size=10)
